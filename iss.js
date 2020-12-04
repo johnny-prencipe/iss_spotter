@@ -28,5 +28,30 @@ const fetchMyIP = (callback) => {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+  request.get(`https://ipwhois.app/json/${ip}`, function(error, response, body) {
+    
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    const myLocation = JSON.parse(response.body);
+    if (myLocation.success === false) {
+      const msg = (`Error: invalid IP address. message from server: ${body}`);
+      callback(Error(msg), null);
+      return;
+    }
+
+    //if we got here, everything is good.
+    const returnLocation = {
+      latitude: myLocation.latitude,
+      longitude: myLocation.longitude
+    };
+
+    callback(returnLocation);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
 
