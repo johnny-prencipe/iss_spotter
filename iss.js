@@ -30,7 +30,7 @@ const fetchMyIP = (callback) => {
 
 const fetchCoordsByIP = (ip, callback) => {
   request.get(`https://ipwhois.app/json/${ip}`, function(error, response, body) {
-    
+
     if (error) {
       callback(error, null);
       return;
@@ -53,5 +53,27 @@ const fetchCoordsByIP = (ip, callback) => {
   });
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIP };
+
+
+const fetchISSFlyOverTimes = function(coords, callback) {
+  request.get(`http://api.open-notify.org/iss-pass.json?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
+
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    const msgBody = JSON.parse(response.body);
+    if (msgBody.message === 'failure') {
+      const msg = `request failed. response from server: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+    //if we get to this point, all is right with the world.
+    callback(null, msgBody.response);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
 
