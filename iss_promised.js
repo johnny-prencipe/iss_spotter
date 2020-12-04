@@ -6,8 +6,8 @@ const fetchCoordsByIP = (body) => request(`https://ipwhois.app/json/${JSON.parse
 
 const fetchISSFlyOverTimes = (coords) => request(`http://api.open-notify.org/iss-pass.json?lat=${JSON.parse(coords).latitude}&lon=${JSON.parse(coords).longitude}`);
 
-const nextISSTimesForMyLocation = (times) => {
-  fetchMyIP()
+const nextISSTimesForMyLocation = () => {
+  return fetchMyIP()
   .then(fetchCoordsByIP)
   .then(fetchISSFlyOverTimes)
   .then(times => JSON.parse(times));
